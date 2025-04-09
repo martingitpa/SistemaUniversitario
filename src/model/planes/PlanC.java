@@ -1,13 +1,38 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package model.planes;
+package model.Planes;
 
-/**
- *
- * @author marti
- */
-public class PlanC {
-    
+import java.util.List;
+import model.Alumno;
+import model.Materia;
+import model.MateriasAlumno;
+import model.Strategy;
+
+public class PlanC implements Strategy {
+
+    @Override
+    public boolean verificarCondicion(Materia materia, Alumno alumno) {
+        // 1. Verificar cursadas de las correlativas
+        for (Materia correlativa : materia.getCorrelativas()) {
+            MateriasAlumno ma = alumno.getAlumnoMateria(correlativa);
+            if (ma == null || !ma.isAproboCursada()) {
+                return false;
+            }
+        }
+
+        // 2. Verificar finales aprobados de materias de los últimos 5 cuatrimestres
+        int cuatrimestreActual = materia.getCuatrimestre();
+        List<MateriasAlumno> historial = alumno.getHistorialAcademico();
+
+        for (MateriasAlumno ma : historial) {
+            Materia m = ma.getMateria();
+            int cuat = m.getCuatrimestre();
+
+            if (cuat >= cuatrimestreActual - 5 && cuat < cuatrimestreActual) {
+                if (!ma.isAproboFinal()) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
 }
