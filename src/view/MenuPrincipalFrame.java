@@ -2,7 +2,6 @@ package view;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import java.util.List;
 import model.Alumno;
 import model.Carrera;
@@ -10,6 +9,7 @@ import model.Carrera;
 public class MenuPrincipalFrame extends JFrame {
     private List<Alumno> alumnos;
     private List<Carrera> carreras;
+    private JPanel panelContenido;
     
 
     public MenuPrincipalFrame(List<Alumno> alumnos, List<Carrera> carreras) {
@@ -20,7 +20,8 @@ public class MenuPrincipalFrame extends JFrame {
         setSize(1200, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-
+        setResizable(false);
+        
         initComponents();
     }
 
@@ -28,16 +29,24 @@ public class MenuPrincipalFrame extends JFrame {
     // Panel principal con BorderLayout
     JPanel panelPrincipal = new JPanel(new BorderLayout());
 
-    // Título
+    // Panel del título
+    JPanel panelTitulo = new JPanel(new BorderLayout());
+    panelTitulo.setBackground(Color.LIGHT_GRAY);
+    panelTitulo.setBorder(BorderFactory.createEmptyBorder(40, 20, 10, 10));
+
     JLabel titulo = new JLabel("Menú Principal", JLabel.LEFT);
     titulo.setFont(new Font("Arial", Font.BOLD, 20));
-    titulo.setBorder(BorderFactory.createEmptyBorder(20, 20, 10, 10));
-    panelPrincipal.add(titulo, BorderLayout.NORTH);
+    panelTitulo.add(titulo, BorderLayout.WEST);
+
+    panelPrincipal.add(panelTitulo, BorderLayout.NORTH);
+
 
     // Panel lateral con botones (columna)
     JPanel panelBotones = new JPanel();
     panelBotones.setLayout(new BoxLayout(panelBotones, BoxLayout.Y_AXIS));
     panelBotones.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 10));
+    panelBotones.setBackground (Color.LIGHT_GRAY); 
+
 
     // Tamaño fijo para los botones
     Dimension botonSize = new Dimension(250, 40);
@@ -45,9 +54,7 @@ public class MenuPrincipalFrame extends JFrame {
     // Botón 1: Alta de Alumno
     JButton btnAltaAlumno = new JButton("Alta de Alumno");
     configurarBoton(btnAltaAlumno, botonSize);
-    btnAltaAlumno.addActionListener(e -> {
-        new AltaAlumnoFrame(alumnos, carreras).setVisible(true);
-    });
+    btnAltaAlumno.addActionListener(e -> mostrarPanel(new AltaAlumnoPanel(alumnos, carreras)));
     panelBotones.add(btnAltaAlumno);
     panelBotones.add(Box.createVerticalStrut(10));
 
@@ -81,8 +88,20 @@ public class MenuPrincipalFrame extends JFrame {
     panelBotones.add(btnVerificarFinalizacion);
 
     panelPrincipal.add(panelBotones, BorderLayout.WEST);
+    
+    // Panel central donde se carga el contenido dinámico
+    panelContenido = new JPanel();
+    panelContenido.setLayout(new BorderLayout());
+    panelPrincipal.add(panelContenido, BorderLayout.CENTER);
+
     add(panelPrincipal);
 }
+private void mostrarPanel(JPanel nuevoPanel) {
+        panelContenido.removeAll();
+        panelContenido.add(nuevoPanel, BorderLayout.CENTER);
+        panelContenido.revalidate();
+        panelContenido.repaint();
+    }
 
 // Método para configurar estilo común de botones
 private void configurarBoton(JButton boton, Dimension size) {
@@ -92,6 +111,3 @@ private void configurarBoton(JButton boton, Dimension size) {
     boton.setMinimumSize(size);
 }
 }
-
-
-
