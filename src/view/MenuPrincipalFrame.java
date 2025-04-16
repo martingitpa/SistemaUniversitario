@@ -32,10 +32,10 @@ public class MenuPrincipalFrame extends JFrame {
     // Panel del título
     JPanel panelTitulo = new JPanel(new BorderLayout());
     panelTitulo.setBackground(Color.LIGHT_GRAY);
-    panelTitulo.setBorder(BorderFactory.createEmptyBorder(40, 20, 10, 10));
+    panelTitulo.setBorder(BorderFactory.createEmptyBorder(40, 52, 10, 10));
 
     JLabel titulo = new JLabel("Menú Principal", JLabel.LEFT);
-    titulo.setFont(new Font("Arial", Font.BOLD, 20));
+    titulo.setFont(new Font("Arial", Font.BOLD, 24));
     panelTitulo.add(titulo, BorderLayout.WEST);
 
     panelPrincipal.add(panelTitulo, BorderLayout.NORTH);
@@ -73,12 +73,14 @@ public class MenuPrincipalFrame extends JFrame {
     // Botón 4: Inscripción a Carrera
     JButton btnInscripcionCarrera = new JButton("Inscripción a Carrera");
     configurarBoton(btnInscripcionCarrera, botonSize);
+    btnInscripcionCarrera.addActionListener(e -> mostrarPanel(new InscripcionCarreraPanel(alumnos, carreras)));
     panelBotones.add(btnInscripcionCarrera);
     panelBotones.add(Box.createVerticalStrut(10));
 
     // Botón 5: Inscripción a Materia
     JButton btnInscripcionMateria = new JButton("Inscripción a Materia");
     configurarBoton(btnInscripcionMateria, botonSize);
+    //btnInscripcionMateria.addActionListener(e -> mostrarPanel(new InscripcionMateriaPanel(alumnos,carreras)))
     panelBotones.add(btnInscripcionMateria);
     panelBotones.add(Box.createVerticalStrut(10));
 
@@ -87,13 +89,25 @@ public class MenuPrincipalFrame extends JFrame {
     configurarBoton(btnVerificarFinalizacion, botonSize);
     panelBotones.add(btnVerificarFinalizacion);
 
+    try {
+        // Cargar y escalar imagen
+        ImageIcon icono = new ImageIcon(getClass().getResource("/resources/logo.jpg"));
+        Image imagen = icono.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
+        icono = new ImageIcon(imagen);
+        JLabel imagenLabel = new JLabel(icono);
+        imagenLabel.setBorder(BorderFactory.createEmptyBorder(70, 40, 0, 0));
+        panelBotones.add(imagenLabel);
+    } catch (Exception ex) {
+        System.err.println("No se pudo cargar la imagen: " + ex.getMessage());
+    }
+
     panelPrincipal.add(panelBotones, BorderLayout.WEST);
     
     // Panel central donde se carga el contenido dinámico
     panelContenido = new JPanel();
     panelContenido.setLayout(new BorderLayout());
     panelPrincipal.add(panelContenido, BorderLayout.CENTER);
-
+    
     add(panelPrincipal);
 }
 private void mostrarPanel(JPanel nuevoPanel) {
