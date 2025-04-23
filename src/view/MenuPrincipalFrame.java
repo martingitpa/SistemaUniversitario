@@ -94,6 +94,7 @@ public class MenuPrincipalFrame extends JFrame {
     // Botón 6: Verificar Finalización de Carrera
     JButton btnVerificarFinalizacion = new JButton("Verificar Finalización de Carrera");
     configurarBoton(btnVerificarFinalizacion, botonSize);
+    btnVerificarFinalizacion.addActionListener(e -> mostrarPanel(new VerificarFinalizacionPanel(alumnos)));
     panelBotones.add(btnVerificarFinalizacion);
 
     try {
