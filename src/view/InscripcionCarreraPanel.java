@@ -13,11 +13,13 @@ public class InscripcionCarreraPanel extends JPanel {
 
     public InscripcionCarreraPanel(List<Alumno> alumnos, List<Carrera> carreras) {
         setLayout(new BorderLayout());
+        setBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40));
         
-        JLabel titulo = new JLabel("Inscripción a Carrera", JLabel.CENTER);
-        titulo.setFont(new Font("Arial", Font.BOLD, 24));
+        //Titulo
+        JLabel titulo = new JLabel("Inscripción a Carrera");
+        titulo.setFont(new Font("Arial", Font.BOLD, 22));
         add(titulo, BorderLayout.NORTH);
-
+        
         // Panel central con formularios
         JPanel formPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();

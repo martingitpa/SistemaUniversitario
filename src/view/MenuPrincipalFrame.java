@@ -5,6 +5,7 @@ import java.awt.*;
 import java.util.List;
 import model.Alumno;
 import model.Carrera;
+import model.Materia;
 import model.PlanEstudio;
 
 public class MenuPrincipalFrame extends JFrame {
@@ -12,11 +13,13 @@ public class MenuPrincipalFrame extends JFrame {
     private List<Carrera> carreras;
     private JPanel panelContenido;
     private List<PlanEstudio> planEstudio;
+    private List <Materia> materia;
 
-    public MenuPrincipalFrame(List<Alumno> alumnos, List<Carrera> carreras, List<PlanEstudio> planesEstudio) {
+    public MenuPrincipalFrame(List<Alumno> alumnos, List<Carrera> carreras, List<PlanEstudio> planesEstudio, List<Materia> materias) {
         this.alumnos = alumnos;
         this.carreras = carreras;
         this.planEstudio= planesEstudio;
+        this.materia=materias;
         
         setTitle("Sistema Académico - Menú Principal");
         setSize(1200, 700);
@@ -70,6 +73,7 @@ public class MenuPrincipalFrame extends JFrame {
     // Botón 3: Alta de Planes
     JButton btnAltaPlanes = new JButton("Alta de Planes");
     configurarBoton(btnAltaPlanes, botonSize);
+    btnAltaPlanes.addActionListener(e -> mostrarPanel(new AltaPlanPanel(planEstudio,materia)));
     panelBotones.add(btnAltaPlanes);
     panelBotones.add(Box.createVerticalStrut(10));
 
@@ -83,7 +87,7 @@ public class MenuPrincipalFrame extends JFrame {
     // Botón 5: Inscripción a Materia
     JButton btnInscripcionMateria = new JButton("Inscripción a Materia");
     configurarBoton(btnInscripcionMateria, botonSize);
-    //btnInscripcionMateria.addActionListener(e -> mostrarPanel(new InscripcionMateriaPanel(alumnos,carreras)))
+    btnInscripcionMateria.addActionListener(e -> mostrarPanel(new InscripcionMateriaPanel(alumnos,carreras)));
     panelBotones.add(btnInscripcionMateria);
     panelBotones.add(Box.createVerticalStrut(10));
 

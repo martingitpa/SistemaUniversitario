@@ -19,11 +19,15 @@ public class AltaAlumnoPanel extends JPanel {
     }
 
     private void initComponents() {
-        setLayout(new BorderLayout()); // Establece layout centrado
+        setLayout(new BorderLayout()); 
+        setBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40));
+        
+        JLabel titulo = new JLabel("Alta de Alumnos");
+        titulo.setFont(new Font("Arial", Font.BOLD, 22));
+        add(titulo, BorderLayout.NORTH);
         
         // Panel interno con GridBagLayout para alinear verticalmente los campos
         JPanel formPanel = new JPanel(new GridBagLayout());
-        formPanel.setBorder(BorderFactory.createEmptyBorder(40, 0, 0, 0)); // Espacio arriba
         
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10); // Espaciado entre componentes
@@ -49,7 +53,7 @@ public class AltaAlumnoPanel extends JPanel {
         formPanel.add(btnGuardar, gbc);
         
         // Agregar el panel al centro (con margen arriba)
-        add(formPanel, BorderLayout.NORTH);
+        add(formPanel, BorderLayout.CENTER);
     }
 
     private void guardarAlumno() {
