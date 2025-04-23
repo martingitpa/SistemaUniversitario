@@ -8,16 +8,13 @@ import model.Carrera;
 public class AltaAlumnoPanel extends JPanel {
     private JTextField txtDni;
     private JTextField txtNombre;
-    private JComboBox<Carrera> comboCarreras;
     private JButton btnGuardar;
 
     private List<Alumno> alumnos; // Lista donde se guarda el alumno creado
-    private List<Carrera> carreras; // Lista de carreras disponibles
 
-    public AltaAlumnoPanel(List<Alumno> alumnos, List<Carrera> carreras) {
-        this.alumnos = alumnos;
-        this.carreras = carreras;
-        
+
+    public AltaAlumnoPanel(List<Alumno> alumnos) {
+        this.alumnos = alumnos;   
         initComponents();
     }
 
@@ -47,15 +44,6 @@ public class AltaAlumnoPanel extends JPanel {
         formPanel.add(txtNombre, gbc);
 
         gbc.gridy++;
-        formPanel.add(new JLabel("Carrera:"), gbc);
-        gbc.gridy++;
-        comboCarreras = new JComboBox<>();
-        for (Carrera carrera : carreras) {
-            comboCarreras.addItem(carrera);
-        }
-        formPanel.add(comboCarreras, gbc);
-
-        gbc.gridy++;
         btnGuardar = new JButton("Guardar");
         btnGuardar.addActionListener(e -> guardarAlumno());
         formPanel.add(btnGuardar, gbc);
@@ -67,15 +55,13 @@ public class AltaAlumnoPanel extends JPanel {
     private void guardarAlumno() {
         String dni = txtDni.getText();
         String nombre = txtNombre.getText();
-        Carrera carreraSeleccionada = (Carrera) comboCarreras.getSelectedItem();
 
-        if (dni.isEmpty() || nombre.isEmpty() || carreraSeleccionada == null) {
+        if (dni.isEmpty() || nombre.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Por favor complete todos los campos.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
         Alumno nuevoAlumno = new Alumno(dni, nombre);
-        nuevoAlumno.setCarrera(carreraSeleccionada);
         alumnos.add(nuevoAlumno);
 
         JOptionPane.showMessageDialog(this, "Alumno creado con éxito.");

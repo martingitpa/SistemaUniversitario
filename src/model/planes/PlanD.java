@@ -18,7 +18,7 @@ public class PlanD implements Strategy {
             }
         }
 
-        // 2. Verificar finales aprobados de materias de los últimos 5 cuatrimestres
+        // 2. Verificar finales aprobados de materias de los últimos 3 cuatrimestres
         int cuatrimestreActual = materia.getCuatrimestre();
         List<MateriasAlumno> historial = alumno.getHistorialAcademico();
 

@@ -5,17 +5,19 @@ import java.awt.*;
 import java.util.List;
 import model.Alumno;
 import model.Carrera;
+import model.PlanEstudio;
 
 public class MenuPrincipalFrame extends JFrame {
     private List<Alumno> alumnos;
     private List<Carrera> carreras;
     private JPanel panelContenido;
-    
+    private List<PlanEstudio> planEstudio;
 
-    public MenuPrincipalFrame(List<Alumno> alumnos, List<Carrera> carreras) {
+    public MenuPrincipalFrame(List<Alumno> alumnos, List<Carrera> carreras, List<PlanEstudio> planesEstudio) {
         this.alumnos = alumnos;
         this.carreras = carreras;
-
+        this.planEstudio= planesEstudio;
+        
         setTitle("Sistema Académico - Menú Principal");
         setSize(1200, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -54,13 +56,14 @@ public class MenuPrincipalFrame extends JFrame {
     // Botón 1: Alta de Alumno
     JButton btnAltaAlumno = new JButton("Alta de Alumno");
     configurarBoton(btnAltaAlumno, botonSize);
-    btnAltaAlumno.addActionListener(e -> mostrarPanel(new AltaAlumnoPanel(alumnos, carreras)));
+    btnAltaAlumno.addActionListener(e -> mostrarPanel(new AltaAlumnoPanel(alumnos)));
     panelBotones.add(btnAltaAlumno);
     panelBotones.add(Box.createVerticalStrut(10));
 
     // Botón 2: Alta de Carreras
     JButton btnAltaCarrera = new JButton("Alta de Carreras");
     configurarBoton(btnAltaCarrera, botonSize);
+    btnAltaCarrera.addActionListener(e -> mostrarPanel(new AltaCarreraPanel(carreras, planEstudio)));
     panelBotones.add(btnAltaCarrera);
     panelBotones.add(Box.createVerticalStrut(10));
 
