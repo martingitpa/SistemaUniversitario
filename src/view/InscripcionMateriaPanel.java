@@ -7,6 +7,7 @@ import model.Materia;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
+import model.MateriasAlumno;
 
 public class InscripcionMateriaPanel extends JPanel {
     private JComboBox<Alumno> comboAlumnos;
@@ -93,16 +94,26 @@ public class InscripcionMateriaPanel extends JPanel {
     }
 
     private void inscribirMateria() {
-        Alumno alumno = (Alumno) comboAlumnos.getSelectedItem();
-        Materia materia = (Materia) comboMaterias.getSelectedItem();
-        Carrera carrera = (Carrera) comboCarreras.getSelectedItem();
+    Alumno alumno = (Alumno) comboAlumnos.getSelectedItem();
+    Materia materia = (Materia) comboMaterias.getSelectedItem();
 
-        if (alumno == null || materia == null || carrera == null) {
-            JOptionPane.showMessageDialog(this, "Seleccione un alumno, una carrera y una materia.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        // Aquí podés registrar la inscripción en el modelo
-        JOptionPane.showMessageDialog(this, "Inscripción a " + materia.getNombre() + " realizada con éxito para " + alumno.getNombre());
+    if (alumno == null || materia == null) {
+        JOptionPane.showMessageDialog(this, "Seleccione un alumno y una materia.", "Error", JOptionPane.ERROR_MESSAGE);
+        return;
     }
+
+    // Verificar si ya estaba inscripto a la materia
+    MateriasAlumno yaInscripto = alumno.getAlumnoMateria(materia);
+    if (yaInscripto != null) {
+        JOptionPane.showMessageDialog(this, "El alumno ya está inscripto en esta materia.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+
+    // Crear un nuevo MateriasAlumno para inscribir
+    MateriasAlumno nuevaInscripcion = new MateriasAlumno(materia);
+    alumno.getHistorialAcademico().add(nuevaInscripcion);
+
+    JOptionPane.showMessageDialog(this, "Inscripción a " + materia.getNombre() + " realizada con éxito para " + alumno.getNombre());
+}
+
 }

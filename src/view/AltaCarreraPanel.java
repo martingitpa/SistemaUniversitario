@@ -99,14 +99,24 @@ public class AltaCarreraPanel extends JPanel {
         if (seleccionado == null) return;
 
         List<Materia> materias = seleccionado.getMaterias();
-        lblCantidadMaterias.setText(String.valueOf(materias.size()));
 
+        int obligatorias = 0;
         StringBuilder lista = new StringBuilder();
         for (Materia m : materias) {
-            lista.append("- ").append(m.getNombre()).append("\n");
+            lista.append("- ").append(m.getNombre());
+            if (m.esObligatoria()) {
+                obligatorias++;
+                lista.append(" (Obligatoria)");
+            } else {
+                lista.append(" (Optativa)");
+            }
+            lista.append("\n");
         }
+
+        lblCantidadMaterias.setText(String.valueOf(obligatorias));  // Mostramos solo las obligatorias
         areaMaterias.setText(lista.toString());
     }
+
       
     private void crearCarrera() {
         String nombre = txtNombre.getText().trim();
