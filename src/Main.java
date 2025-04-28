@@ -60,6 +60,19 @@ public class Main {
         carrera.cargarObligatoria(elemlm);
         carrera.cargarObligatoria(analisis);
         carreras.add(carrera);
+        
+        //Asocio la carrera a Martín
+        alumno1.setCarrera(carrera);
+        
+        //Inscribo y apruebo todas las materias
+        for (Materia materia : plan.getMaterias()) {
+        alumno1.inscribirMateria(materia);
+        MateriasAlumno ma = alumno1.getAlumnoMateria(materia);
+        if (ma != null) {
+            ma.aprobarCursada(8); // Ejemplo: 8 de nota cursada
+            ma.aprobarFinal(8);   // Ejemplo: 8 de nota final
+        }
+    }
 
         // Iniciar interfaz
         SwingUtilities.invokeLater(() -> {

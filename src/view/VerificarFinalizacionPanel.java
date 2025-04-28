@@ -45,7 +45,7 @@ public class VerificarFinalizacionPanel extends JPanel {
         gbc.gridy = 1;
         formPanel.add(labelInfoAlumno, gbc);
 
-        areaInfoAlumno = new JTextArea(10, 30);
+        areaInfoAlumno = new JTextArea(10, 50);
         areaInfoAlumno.setEditable(false);
         areaInfoAlumno.setText("Información del alumno se mostrará aquí.");
         gbc.gridx = 1;
@@ -66,67 +66,102 @@ public class VerificarFinalizacionPanel extends JPanel {
     }
 
     private void verificarFinalizacion() {
-        Alumno alumnoSeleccionado = (Alumno) comboAlumnos.getSelectedItem();
+    Alumno alumnoSeleccionado = (Alumno) comboAlumnos.getSelectedItem();
 
-        if (alumnoSeleccionado != null) {
-            // Imprimir la información del alumno y materias inscriptas
-            StringBuilder info = new StringBuilder();
-            info.append("Alumno: ").append(alumnoSeleccionado.getNombre()).append("\n");
-            info.append("Carrera: ").append(alumnoSeleccionado.getCarrera().getNombre()).append("\n");
+    if (alumnoSeleccionado != null) {
+        StringBuilder info = new StringBuilder();
+        info.append("Alumno: ").append(alumnoSeleccionado.getNombre()).append("\n");
 
-            // Mostrar las materias que el alumno está cursando
-            info.append("Materias Inscriptas:\n");
+        if (alumnoSeleccionado.getCarrera() != null) {
+            Carrera carrera = alumnoSeleccionado.getCarrera();
+            info.append("Carrera: ").append(carrera.getNombre()).append("\n\n");
+
             List<MateriasAlumno> historial = alumnoSeleccionado.getHistorialAcademico();
-            for (MateriasAlumno materiaAlumno : historial) {
-                Materia materia = materiaAlumno.getMateria();
-                info.append("- ").append(materia.getNombre())
-                     .append(" (Cursada Aprobada: ").append(materiaAlumno.isAproboCursada())
-                     .append(", Final Aprobado: ").append(materiaAlumno.isAproboFinal()).append(")\n");
+            if (historial.isEmpty()) {
+                info.append("El alumno no está anotado en ninguna materia.\n");
+            } else {
+                info.append("Materias inscriptas:\n");
+                for (MateriasAlumno materiaAlumno : historial) {
+                    Materia materia = materiaAlumno.getMateria();
+                    info.append("- ").append(materia.getNombre())
+                        .append(" (Cursada Aprobada: ").append(materiaAlumno.isAproboCursada())
+                        .append(", Final Aprobado: ").append(materiaAlumno.isAproboFinal()).append(")\n");
+                }
             }
 
-            // Verificar si ha finalizado la carrera
-            boolean finalizoCarrera = verificarSiFinalizoCarrera(alumnoSeleccionado);
+            // --- Análisis de materias obligatorias ---
+            List<Materia> obligatorias = carrera.getMateriasObligatorias();
+            List<Materia> optativas = carrera.getMateriasOptativas();
+            int cantOptativasRequeridas = carrera.getCantidadOptativasRequeridas();
+
+            List<Materia> obligatoriasAprobadas = new java.util.ArrayList<>();
+            List<Materia> obligatoriasFaltantes = new java.util.ArrayList<>();
+            List<Materia> optativasAprobadas = new java.util.ArrayList<>();
+            List<Materia> optativasFaltantes = new java.util.ArrayList<>();
+            
+            for (Materia materia : obligatorias) {
+                MateriasAlumno materiaAlumno = alumnoSeleccionado.getAlumnoMateria(materia);
+                if (materiaAlumno != null && materiaAlumno.isAproboFinal()) {
+                    obligatoriasAprobadas.add(materia);
+                } else {
+                    obligatoriasFaltantes.add(materia);
+                }
+            }
+
+            // --- Análisis de materias optativas ---
+            for (Materia materia : optativas) {
+                 MateriasAlumno materiaAlumno = alumnoSeleccionado.getAlumnoMateria(materia);
+                 if (materiaAlumno != null && materiaAlumno.isAproboFinal()) {
+                     optativasAprobadas.add(materia);
+                 } else {
+                     optativasFaltantes.add(materia);
+                 }
+             }
+
+            info.append("\nResumen de Finalización:\n");
+            info.append("- Materias obligatorias aprobadas: ").append(obligatoriasAprobadas.size())
+                .append(" de ").append(obligatorias.size()).append("\n");
+
+            if (!obligatoriasFaltantes.isEmpty()) {
+                info.append("Materias obligatorias pendientes:\n");
+                for (Materia m : obligatoriasFaltantes) {
+                    info.append("  • ").append(m.getNombre()).append("\n");
+                }
+            }
+
+            info.append("- Materias optativas aprobadas: ")
+                .append(optativasAprobadas.size()).append(" de ").append(optativas.size())
+                .append(" (mínimo requerido: ").append(cantOptativasRequeridas).append(")\n");
+
+            if (!optativasAprobadas.isEmpty()) {
+                info.append("Materias optativas aprobadas:\n");
+                for (Materia m : optativasAprobadas) {
+                    info.append("  • ").append(m.getNombre()).append("\n");
+                }
+            }
+            if (!optativasFaltantes.isEmpty()) {
+                info.append("Materias optativas pendientes:\n");
+                for (Materia m : optativasFaltantes) {
+                    info.append("  • ").append(m.getNombre()).append("\n");
+                }
+            }
+
+            // --- Verificación final ---
+             boolean finalizoCarrera = (obligatoriasFaltantes.isEmpty()) && (optativasAprobadas.size() >= cantOptativasRequeridas);
 
             if (finalizoCarrera) {
-                info.append("\n¡El alumno ha finalizado la carrera!");
+                info.append("\n🎓 ¡El alumno ha finalizado la carrera!");
             } else {
-                info.append("\nEl alumno aún no ha finalizado la carrera.");
+                info.append("\n🚧 El alumno aún no ha finalizado la carrera.");
             }
 
-            // Mostrar la información en el área de texto
-            areaInfoAlumno.setText(info.toString());
         } else {
-            JOptionPane.showMessageDialog(this, "Debe seleccionar un alumno.");
+            info.append("El alumno no está inscripto en ninguna carrera.\n");
         }
+
+        areaInfoAlumno.setText(info.toString());
+    } else {
+        JOptionPane.showMessageDialog(this, "Debe seleccionar un alumno.");
     }
-
-    private boolean verificarSiFinalizoCarrera(Alumno alumno) {
-        Carrera carrera = alumno.getCarrera();
-        List<Materia> materiasObligatorias = carrera.getMateriasObligatorias();
-        List<Materia> materiasOptativas = carrera.getMateriasOptativas();
-        int cantOptativasRequeridas = carrera.getCantidadOptativasRequeridas();
-
-        int materiasObligatoriasAprobadas = 0;
-        int materiasOptativasAprobadas = 0;
-
-        // Verificar materias obligatorias aprobadas
-        for (Materia materia : materiasObligatorias) {
-            MateriasAlumno materiaAlumno = alumno.getAlumnoMateria(materia);
-            if (materiaAlumno != null && materiaAlumno.isAproboFinal()) {
-                materiasObligatoriasAprobadas++;
-            }
-        }
-
-        // Verificar materias optativas aprobadas
-        for (Materia materia : materiasOptativas) {
-            MateriasAlumno materiaAlumno = alumno.getAlumnoMateria(materia);
-            if (materiaAlumno != null && materiaAlumno.isAproboFinal()) {
-                materiasOptativasAprobadas++;
-            }
-        }
-
-        // Verificar si cumplió con las condiciones
-        return materiasObligatoriasAprobadas == materiasObligatorias.size() &&
-               materiasOptativasAprobadas >= cantOptativasRequeridas;
-    }
+}
 }

@@ -28,7 +28,7 @@ public class MateriasAlumno {
             if (nota >= 7 && materia.esPromocionable()) {
                 this.aproboFinal = true;
                 this.notaFinal = nota; // Se toma la misma nota de cursada
-                System.out.println("Materia promocionada: " + materia.getNombre() + " (Final aprobado automáticamente con nota: " + nota + ")");
+                System.out.println("Materia promocionada: " + materia.getNombre() + " (Final aprobado automaticamente con nota: " + nota + ")");
             }
         } else {
             this.aproboCursada = false;
@@ -42,7 +42,7 @@ public class MateriasAlumno {
             return;
         }
         if (aproboFinal) {
-            System.out.println("El final ya está aprobado, no es necesario volver a registrarlo.");
+            System.out.println("El final ya esta aprobado, no es necesario volver a registrarlo.");
             return;
         }
 

@@ -69,4 +69,10 @@ public class Alumno {
     public String toString() {
         return nombre;
     }
+    
+    public void inscribirMateria(Materia materia) {
+        MateriasAlumno nuevaInscripcion = new MateriasAlumno(materia);
+        historialAcademico.add(nuevaInscripcion);
+    }
+
 }   
