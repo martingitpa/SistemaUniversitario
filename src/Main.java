@@ -25,15 +25,20 @@ public class Main {
         //Cargar materias
         Materia elementos= new Materia("Elementos de informatica",1,true,true);
         Materia expresion= new Materia("Expresion de Problemas y Algoritmos",1,true,true);
-        Materia elem= new Materia("Algebra",1,true,true);
+        Materia alg= new Materia("Algebra",1,true,true);
         Materia eng= new Materia("Ingles",1,false,true);
+        
         Materia ayp1= new Materia("Algoritmica y Programacion I",2,true,true);
         Materia elemlm= new Materia("Elementos de Logica y Matematica Discreta",2,true,true);
         Materia analisis= new Materia("Analisis Matematico",2,true,true);
         
+        //Cargar correlativas
+        ayp1.agregarCorrelativas(expresion);//Algoritmica 1 requiere haber aprobado expresion
+        analisis.agregarCorrelativas(alg); //Analisis Matematico requiere Algebra
+        
         materias.add(elementos);
         materias.add(expresion);
-        materias.add(elem);
+        materias.add(alg);
         materias.add(eng);
         materias.add(ayp1);
         materias.add(elemlm);
@@ -43,7 +48,7 @@ public class Main {
         PlanEstudio plan = new PlanEstudio("Plan Sistemas 2025 (Plan A)", new PlanA());
         plan.agregarMateria(elementos);
         plan.agregarMateria(expresion);
-        plan.agregarMateria(elem);
+        plan.agregarMateria(alg);
         plan.agregarMateria(eng);
         plan.agregarMateria(ayp1);
         plan.agregarMateria(elemlm);
@@ -54,7 +59,7 @@ public class Main {
         Carrera carrera = new Carrera("Analista en Sistemas", plan, 1);//Requiere 1 optativa
         carrera.cargarObligatoria(elementos);
         carrera.cargarObligatoria(expresion);
-        carrera.cargarObligatoria(elem);
+        carrera.cargarObligatoria(alg);
         carrera.cargarOptativa(eng);
         carrera.cargarObligatoria(ayp1);
         carrera.cargarObligatoria(elemlm);

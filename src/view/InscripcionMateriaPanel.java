@@ -6,6 +6,7 @@ import model.Materia;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 import model.MateriasAlumno;
 
@@ -108,7 +109,28 @@ public class InscripcionMateriaPanel extends JPanel {
         JOptionPane.showMessageDialog(this, "El alumno ya está inscripto en esta materia.", "Advertencia", JOptionPane.WARNING_MESSAGE);
         return;
     }
+    
+    // Validar correlativas
+    List<Materia> correlativas = materia.getCorrelativas();
+    List<Materia> correlativasPendientes = new ArrayList<>();
 
+    for (Materia correlativa : correlativas) {
+        MateriasAlumno estado = alumno.getAlumnoMateria(correlativa);
+        if (estado == null || !estado.isAproboFinal()) {
+            correlativasPendientes.add(correlativa);
+        }
+    }
+
+    if (!correlativasPendientes.isEmpty()) {
+        StringBuilder mensaje = new StringBuilder("No se puede inscribir. Debe aprobar el final de:\n");
+        for (Materia m : correlativasPendientes) {
+            mensaje.append(" - ").append(m.getNombre()).append("\n");
+        }
+        JOptionPane.showMessageDialog(this, mensaje.toString(), "Correlativas pendientes", JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+    
+    //Si pasa las correlativas inscribo
     // Crear un nuevo MateriasAlumno para inscribir
     MateriasAlumno nuevaInscripcion = new MateriasAlumno(materia);
     alumno.getHistorialAcademico().add(nuevaInscripcion);
