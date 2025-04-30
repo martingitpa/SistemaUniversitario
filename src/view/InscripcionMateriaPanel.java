@@ -97,45 +97,30 @@ public class InscripcionMateriaPanel extends JPanel {
     private void inscribirMateria() {
     Alumno alumno = (Alumno) comboAlumnos.getSelectedItem();
     Materia materia = (Materia) comboMaterias.getSelectedItem();
+    Carrera carrera = (Carrera) comboCarreras.getSelectedItem();
 
-    if (alumno == null || materia == null) {
-        JOptionPane.showMessageDialog(this, "Seleccione un alumno y una materia.", "Error", JOptionPane.ERROR_MESSAGE);
+    if (alumno == null || materia == null || carrera == null) {
+        JOptionPane.showMessageDialog(this, "Seleccione alumno, carrera y materia.", "Error", JOptionPane.ERROR_MESSAGE);
         return;
     }
 
-    // Verificar si ya estaba inscripto a la materia
-    MateriasAlumno yaInscripto = alumno.getAlumnoMateria(materia);
-    if (yaInscripto != null) {
-        JOptionPane.showMessageDialog(this, "El alumno ya está inscripto en esta materia.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+    // Validar si puede cursar segun estrategia del plan
+    boolean puedeCursar = carrera.getPlanEstudio().getEstrategia().verificarCondicion(materia, alumno);
+    if (!puedeCursar) {
+        JOptionPane.showMessageDialog(this, "El alumno no cumple con las correlativas para cursar esta materia.", "Advertencia", JOptionPane.WARNING_MESSAGE);
         return;
     }
-    
-    // Validar correlativas
-    List<Materia> correlativas = materia.getCorrelativas();
-    List<Materia> correlativasPendientes = new ArrayList<>();
 
-    for (Materia correlativa : correlativas) {
-        MateriasAlumno estado = alumno.getAlumnoMateria(correlativa);
-        if (estado == null || !estado.isAproboFinal()) {
-            correlativasPendientes.add(correlativa);
-        }
-    }
-
-    if (!correlativasPendientes.isEmpty()) {
-        StringBuilder mensaje = new StringBuilder("No se puede inscribir. Debe aprobar el final de:\n");
-        for (Materia m : correlativasPendientes) {
-            mensaje.append(" - ").append(m.getNombre()).append("\n");
-        }
-        JOptionPane.showMessageDialog(this, mensaje.toString(), "Correlativas pendientes", JOptionPane.WARNING_MESSAGE);
+    // Verificar si ya estaba inscripto
+    if (alumno.getAlumnoMateria(materia) != null) {
+        JOptionPane.showMessageDialog(this, "El alumno ya esta inscripto en esta materia.", "Advertencia", JOptionPane.WARNING_MESSAGE);
         return;
     }
-    
-    //Si pasa las correlativas inscribo
-    // Crear un nuevo MateriasAlumno para inscribir
-    MateriasAlumno nuevaInscripcion = new MateriasAlumno(materia);
-    alumno.getHistorialAcademico().add(nuevaInscripcion);
 
-    JOptionPane.showMessageDialog(this, "Inscripción a " + materia.getNombre() + " realizada con éxito para " + alumno.getNombre());
+    // Inscripción
+    alumno.getHistorialAcademico().add(new MateriasAlumno(materia));
+    JOptionPane.showMessageDialog(this, "Inscripcion a " + materia.getNombre() + " realizada con exito para " + alumno.getNombre());
 }
+
 
 }

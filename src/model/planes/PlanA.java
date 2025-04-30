@@ -21,7 +21,7 @@ public class PlanA implements Strategy {
             System.out.println(materia.getNombre() +" Requiere la siguiente correlativa: " + correlativa.getNombre() + " | ¿Aprobada? " + aprobada);
 
             if (!aprobada) {
-                System.out.println("No puede cursar " + materia.getNombre() + " porque no aprobó " + correlativa.getNombre());
+                System.out.println("No puede cursar " + materia.getNombre() + " porque no aprobo " + correlativa.getNombre());
                 return false;
             }
         }

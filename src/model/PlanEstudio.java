@@ -53,6 +53,9 @@
         public String toString() {
             return nombre;
         }
-
+        
+        public Strategy getEstrategia() {
+            return estrategia;
+        }
 
     }
