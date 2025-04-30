@@ -107,10 +107,36 @@ public class AltaPlanPanel extends JPanel {
             return;
         }
 
+        //Crear el plan
         PlanEstudio nuevo = new PlanEstudio(nombre, estrategia);
+        
+        // Agregar materias seleccionadas
+        Component[] components = panelMaterias.getComponents();
+        for (Component c : components) {
+            if (c instanceof JCheckBox checkBox && checkBox.isSelected()) {
+                Materia materia = (Materia) checkBox.getClientProperty("materia");
+                if (materia != null) {
+                    nuevo.agregarMateria(materia);
+                }
+            }
+        }
+        
+        // Validar que se haya agregado al menos una materia
+        if (nuevo.getMaterias().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Debe seleccionar al menos una materia para el plan.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        //Guardo el plan en la lista
         planesEstudio.add(nuevo);
 
         JOptionPane.showMessageDialog(this, "Plan de estudio creado.");
         txtNombre.setText("");
+         
+        for (Component c : panelMaterias.getComponents()) {
+            if (c instanceof JCheckBox checkBox) {
+                checkBox.setSelected(false);
+            }
+        }
     }
 }
