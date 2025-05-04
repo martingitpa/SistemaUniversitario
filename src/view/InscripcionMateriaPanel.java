@@ -94,32 +94,38 @@ public class InscripcionMateriaPanel extends JPanel {
     }
 
     private void inscribirMateria() {
-    Alumno alumno = (Alumno) comboAlumnos.getSelectedItem();
-    Materia materia = (Materia) comboMaterias.getSelectedItem();
-    Carrera carrera = (Carrera) comboCarreras.getSelectedItem();
+        Alumno alumno = (Alumno) comboAlumnos.getSelectedItem();
+        Materia materia = (Materia) comboMaterias.getSelectedItem();
+        Carrera carrera = (Carrera) comboCarreras.getSelectedItem();
 
-    if (alumno == null || materia == null || carrera == null) {
-        JOptionPane.showMessageDialog(this, "Seleccione alumno, carrera y materia.", "Error", JOptionPane.ERROR_MESSAGE);
-        return;
+        if (alumno == null || materia == null || carrera == null) {
+            JOptionPane.showMessageDialog(this, "Seleccione alumno, carrera y materia.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Validar si el alumno está inscripto en la carrera
+        if (alumno.getCarrera() == null || !alumno.getCarrera().equals(carrera)) {
+            JOptionPane.showMessageDialog(this, "El alumno no está inscripto en la carrera seleccionada.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Validar si puede cursar segun estrategia del plan
+        boolean puedeCursar = carrera.getPlanEstudio().getEstrategia().verificarCondicion(materia, alumno);
+        if (!puedeCursar) {
+            JOptionPane.showMessageDialog(this, "El alumno no cumple con las correlativas para cursar esta materia.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Verificar si ya estaba inscripto
+        if (alumno.getAlumnoMateria(materia) != null) {
+            JOptionPane.showMessageDialog(this, "El alumno ya esta inscripto en esta materia.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Inscripción
+        alumno.getHistorialAcademico().add(new MateriasAlumno(materia));
+        JOptionPane.showMessageDialog(this, "Inscripcion a " + materia.getNombre() + " realizada con exito para " + alumno.getNombre());
     }
-
-    // Validar si puede cursar segun estrategia del plan
-    boolean puedeCursar = carrera.getPlanEstudio().getEstrategia().verificarCondicion(materia, alumno);
-    if (!puedeCursar) {
-        JOptionPane.showMessageDialog(this, "El alumno no cumple con las correlativas para cursar esta materia.", "Advertencia", JOptionPane.WARNING_MESSAGE);
-        return;
-    }
-
-    // Verificar si ya estaba inscripto
-    if (alumno.getAlumnoMateria(materia) != null) {
-        JOptionPane.showMessageDialog(this, "El alumno ya esta inscripto en esta materia.", "Advertencia", JOptionPane.WARNING_MESSAGE);
-        return;
-    }
-
-    // Inscripción
-    alumno.getHistorialAcademico().add(new MateriasAlumno(materia));
-    JOptionPane.showMessageDialog(this, "Inscripcion a " + materia.getNombre() + " realizada con exito para " + alumno.getNombre());
-}
 
 
 }

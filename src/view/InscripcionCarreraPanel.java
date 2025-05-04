@@ -61,7 +61,7 @@ public class InscripcionCarreraPanel extends JPanel {
 
             if (alumnoSeleccionado != null && carreraSeleccionada != null) {
                 alumnoSeleccionado.setCarrera(carreraSeleccionada);
-                JOptionPane.showMessageDialog(this, "Alumno " + alumnoSeleccionado.getNombre() + " inscrito en la carrera " + carreraSeleccionada.getNombre());
+                JOptionPane.showMessageDialog(this, "Alumno " + alumnoSeleccionado.getNombre() + " inscripto en la carrera " + carreraSeleccionada.getNombre());
             } else {
                 JOptionPane.showMessageDialog(this, "Debe seleccionar un alumno y una carrera.");
             }
