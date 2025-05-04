@@ -72,9 +72,14 @@ public class AltaPlanPanel extends JPanel {
         scroll.setPreferredSize(new Dimension(350, 150));
         gbc.gridy = 4;
         formPanel.add(scroll, gbc);
+        
+        JButton btnCargarMateria = new JButton("Cargar nueva materia");
+        btnCargarMateria.addActionListener(e -> abrirDialogoCargaMateria());
+        gbc.gridy = 5;
+        formPanel.add(btnCargarMateria, gbc);
 
         // Botón
-        gbc.gridy = 5;
+        gbc.gridy = 6;
         btnGuardar = new JButton("Crear Plan");
         formPanel.add(btnGuardar, gbc);
 
@@ -138,5 +143,107 @@ public class AltaPlanPanel extends JPanel {
                 checkBox.setSelected(false);
             }
         }
+    }
+    
+    private void agregarMateriaCheckbox(Materia materia) {
+        JCheckBox checkBox = new JCheckBox(materia.getNombre());
+        checkBox.putClientProperty("materia", materia);
+        panelMaterias.add(checkBox);
+        panelMaterias.revalidate();
+        panelMaterias.repaint();
+    }
+
+    
+    private void abrirDialogoCargaMateria() {
+        JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Nueva Materia", true);
+        dialog.setSize(450, 500);
+        dialog.setLocationRelativeTo(this);
+        dialog.setLayout(new GridBagLayout());
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        // Nombre de la materia
+        gbc.gridx = 0; gbc.gridy = 0;
+        dialog.add(new JLabel("Nombre:"), gbc);
+        gbc.gridx = 1;
+        JTextField txtNombre = new JTextField(20);
+        dialog.add(txtNombre, gbc);
+
+        // Cuatrimestre
+        gbc.gridx = 0; gbc.gridy = 1;
+        dialog.add(new JLabel("Cuatrimestre:"), gbc);
+        gbc.gridx = 1;
+        JComboBox<Integer> comboCuatrimestre = new JComboBox<>(new Integer[]{1, 2, 3, 4, 5});
+        dialog.add(comboCuatrimestre, gbc);
+
+        // Tipo (Obligatoria / Optativa)
+        gbc.gridx = 0; gbc.gridy = 2;
+        dialog.add(new JLabel("Tipo:"), gbc);
+        gbc.gridx = 1;
+        JComboBox<String> comboTipo = new JComboBox<>(new String[]{"Obligatoria", "Optativa"});
+        dialog.add(comboTipo, gbc);
+
+        // ¿Es Promocionable?
+        gbc.gridx = 0; gbc.gridy = 3;
+        dialog.add(new JLabel("Promocionable:"), gbc);
+        gbc.gridx = 1;
+        JCheckBox chkPromocionable = new JCheckBox("Sí");
+        dialog.add(chkPromocionable, gbc);
+
+        // Lista de correlativas
+        gbc.gridx = 0; gbc.gridy = 4; gbc.gridwidth = 2;
+        dialog.add(new JLabel("Seleccionar correlativas (si hay):"), gbc);
+
+        gbc.gridy = 5;
+        DefaultListModel<Materia> listModel = new DefaultListModel<>();
+        for (Materia m : materiasDisponibles) {
+            listModel.addElement(m);
+        }
+        JList<Materia> listCorrelativas = new JList<>(listModel);
+        listCorrelativas.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        JScrollPane scrollCorrelativas = new JScrollPane(listCorrelativas);
+        scrollCorrelativas.setPreferredSize(new Dimension(300, 100));
+        dialog.add(scrollCorrelativas, gbc);
+
+        // Botón Guardar
+        gbc.gridy = 6;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        JButton btnGuardar = new JButton("Guardar Materia");
+        dialog.add(btnGuardar, gbc);
+
+        // Acción del botón Guardar
+        btnGuardar.addActionListener(e -> {
+            String nombre = txtNombre.getText().trim();
+            int cuatrimestre = (int) comboCuatrimestre.getSelectedItem();
+            boolean esObligatoria = comboTipo.getSelectedItem().equals("Obligatoria");
+            boolean esPromocionable = chkPromocionable.isSelected();
+
+            if (nombre.isEmpty()) {
+                JOptionPane.showMessageDialog(dialog, "Ingrese el nombre de la materia.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Crear nueva materia
+            Materia nuevaMateria = new Materia(nombre, cuatrimestre, esObligatoria, esPromocionable);
+
+            // Agregar correlativas seleccionadas
+            List<Materia> seleccionadas = listCorrelativas.getSelectedValuesList();
+            for (Materia correlativa : seleccionadas) {
+                if (!correlativa.getNombre().equalsIgnoreCase(nombre)) { // Evita agregar a sí misma
+                    nuevaMateria.agregarCorrelativas(correlativa);
+                }
+            }
+
+            // Agregar la nueva materia a la lista general
+            materiasDisponibles.add(nuevaMateria);
+            agregarMateriaCheckbox(nuevaMateria);
+
+            dialog.dispose();
+        });
+
+        dialog.setVisible(true);
     }
 }
