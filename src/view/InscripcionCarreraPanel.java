@@ -56,15 +56,24 @@ public class InscripcionCarreraPanel extends JPanel {
 
         // Acción del botón
         btnInscribir.addActionListener(e -> {
-            Alumno alumnoSeleccionado = (Alumno) comboAlumnos.getSelectedItem();
-            Carrera carreraSeleccionada = (Carrera) comboCarreras.getSelectedItem();
+        Alumno alumnoSeleccionado = (Alumno) comboAlumnos.getSelectedItem();
+        Carrera carreraSeleccionada = (Carrera) comboCarreras.getSelectedItem();
 
-            if (alumnoSeleccionado != null && carreraSeleccionada != null) {
-                alumnoSeleccionado.setCarrera(carreraSeleccionada);
-                JOptionPane.showMessageDialog(this, "Alumno " + alumnoSeleccionado.getNombre() + " inscripto en la carrera " + carreraSeleccionada.getNombre());
-            } else {
-                JOptionPane.showMessageDialog(this, "Debe seleccionar un alumno y una carrera.");
+        if (alumnoSeleccionado != null && carreraSeleccionada != null) {
+            if (alumnoSeleccionado.getCarrera() != null) {
+                JOptionPane.showMessageDialog(this, 
+                    "El alumno ya está inscripto en la carrera: " + alumnoSeleccionado.getCarrera().getNombre(), 
+                    "Inscripción no permitida", 
+                    JOptionPane.WARNING_MESSAGE);
+                return;
             }
-        });
+
+            alumnoSeleccionado.setCarrera(carreraSeleccionada);
+            JOptionPane.showMessageDialog(this, 
+                "Alumno " + alumnoSeleccionado.getNombre() + " inscripto en la carrera " + carreraSeleccionada.getNombre(), 
+                "Inscripción exitosa", 
+                JOptionPane.INFORMATION_MESSAGE);
+        }
+    });
     }
 }
