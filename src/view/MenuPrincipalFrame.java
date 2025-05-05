@@ -96,14 +96,22 @@ public class MenuPrincipalFrame extends JFrame {
     configurarBoton(btnVerificarFinalizacion, botonSize);
     btnVerificarFinalizacion.addActionListener(e -> mostrarPanel(new VerificarFinalizacionPanel(alumnos)));
     panelBotones.add(btnVerificarFinalizacion);
-
+    panelBotones.add(Box.createVerticalStrut(10));
+    
+    // Botón 7: Cargar Notas
+    JButton btnCargarNotas = new JButton("Cargar Nota");
+    configurarBoton(btnCargarNotas, botonSize);
+    btnCargarNotas.addActionListener(e -> mostrarPanel(new CargaNotasPanel(alumnos)));
+    panelBotones.add(btnCargarNotas);
+    panelBotones.add(Box.createVerticalStrut(10));
+    
     try {
         // Cargar y escalar imagen
         ImageIcon icono = new ImageIcon(getClass().getResource("/resources/logo.jpg"));
         Image imagen = icono.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
         icono = new ImageIcon(imagen);
         JLabel imagenLabel = new JLabel(icono);
-        imagenLabel.setBorder(BorderFactory.createEmptyBorder(70, 40, 0, 0));
+        imagenLabel.setBorder(BorderFactory.createEmptyBorder(30, 40, 0, 0));
         panelBotones.add(imagenLabel);
     } catch (Exception ex) {
         System.err.println("No se pudo cargar la imagen: " + ex.getMessage());

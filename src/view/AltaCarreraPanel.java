@@ -129,6 +129,14 @@ public class AltaCarreraPanel extends JPanel {
         }
 
         Carrera nuevaCarrera = new Carrera(nombre, plan, cantOptativas);
+        // Cargamos las materias del plan a la carrera según si son obligatorias u optativas
+        for (Materia m : plan.getMaterias()) {
+            if (m.esObligatoria()) {
+                nuevaCarrera.cargarObligatoria(m);
+            } else {
+                nuevaCarrera.cargarOptativa(m);
+            }
+        }
         carreras.add(nuevaCarrera);
 
         JOptionPane.showMessageDialog(this, "Carrera creada con éxito.");

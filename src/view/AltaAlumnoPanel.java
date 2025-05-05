@@ -3,7 +3,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 import model.Alumno;
-import model.Carrera;
 
 public class AltaAlumnoPanel extends JPanel {
     private JTextField txtDni;
